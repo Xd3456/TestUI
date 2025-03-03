@@ -1,4 +1,3 @@
-
 -- made by portal
 -- example at bottom
 local Library = {};
@@ -549,7 +548,7 @@ do
 			};
 
 			-- // Instances
-			local ScreenGui = Instance.new('ScreenGui', game.CoreGui)
+			local ScreenGui = Instance.new('ScreenGui', game:GetService("RunService"):IsStudio() and game.Players.LocalPlayer.PlayerGui or game.CoreGui)
 			local Main = Instance.new('Frame', ScreenGui)
 			local Inline = Instance.new('Frame', Main)
 			local Middle = Instance.new('Frame', Inline)
