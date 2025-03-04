@@ -570,7 +570,8 @@ local Library = {}; do
                     FrameCount = 0;
                 end;
 
-                Objects["text"].Text = (`%s  |  %s fps  |  %s ms  |  %s`):format(
+                -- Objects["text"].Text = (`%s  |  %s fps  |  %s ms  |  %s`):format(
+                Objects["text"].Text = (`%s  |  %s fps  |  %s ms`):format(
                     Data.Name,
                     math.floor(FPS),
                     math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue()),
