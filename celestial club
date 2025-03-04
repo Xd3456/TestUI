@@ -52,6 +52,7 @@ local Library = {}; do
         end;
 
         -- Files
+
         if not isfile(Library.FolderName .. '/Utilities/Hue.png') then
             writefile(Library.FolderName .. '/Utilities/Hue.png', game:HttpGet("https://raw.githubusercontent.com/sametexe001/celestial.club/refs/heads/main/images/saturation.png"));
         end;
@@ -1423,7 +1424,7 @@ local Library = {}; do
             SubObjects["hue"].BorderColor3 = Color3.fromRGB(0, 0, 0)
             SubObjects["hue"].AutoButtonColor = false
             SubObjects["hue"].AnchorPoint = Vector2.new(1, 0)
-            SubObjects["hue"].Image = "rbxassetid://133334110106525"
+            SubObjects["hue"].Image = getcustomasset(Library.FolderName .. "/Utilities/Hue.png");
             SubObjects["hue"].Name = "hue"
             SubObjects["hue"].Position = UDim2.new(1, -8, 0, 7)
             SubObjects["hue"].Size = UDim2.new(0, 17, 0, 150)
