@@ -574,7 +574,7 @@ local Library = {}; do
                     Data.Name,
                     math.floor(FPS),
                     math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue()),
-                    game.Players.LocalPlayer.UserId
+                    -- game.Players.LocalPlayer.UserId
                 );
                 Objects["watermark"].Size = UDim2.new(0,Objects["text"].TextBounds.X + 32,0,25);
             end);
