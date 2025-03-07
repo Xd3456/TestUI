@@ -2367,7 +2367,7 @@ local Library = {}; do
                 Dropdown.Value = Value;
                 Objects["value"].Text = tostring(Value); 
                 Dropdown.Options[Value].IsSelected = true;
-                Library:RemoveFromRegistry(Dropdown.Options[Index].Text);
+                Library:RemoveFromRegistry(Dropdown.Options[Value].Text);
                 Library:AddToRegistry(Dropdown.Options[Value].Text, {
                     TextColor3 = "Accent"
                 })
@@ -2393,50 +2393,95 @@ local Library = {}; do
         end;
 
         function Dropdown:AddOption(Name)
-            local OptionInsts = {}
-        
-            -- 创建 UI 元素
+            local OptionInsts = {};
+
             OptionInsts["option"] = Instance.new("TextButton")
+            OptionInsts["option"].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+            OptionInsts["option"].TextColor3 = Color3.fromRGB(0, 0, 0)
+            OptionInsts["option"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+            OptionInsts["option"].Text = ""
+            OptionInsts["option"].BackgroundTransparency = 1
+            OptionInsts["option"].Name = "option"
+            OptionInsts["option"].Size = UDim2.new(1, 0, 0, 15)
+            OptionInsts["option"].BorderSizePixel = 0
+            OptionInsts["option"].TextSize = 14
+            OptionInsts["option"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            OptionInsts["option"].Parent = Objects["optionholder"]
+
             OptionInsts["text"] = Instance.new("TextLabel")
+            OptionInsts["text"].FontFace = LibFont;
+            OptionInsts["text"].TextColor3 = Library.Text
+            OptionInsts["text"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+            OptionInsts["text"].Text = Name
+            OptionInsts["text"].Name = "text"
+            OptionInsts["text"].Size = UDim2.new(1, 0, 1, 0)
+            OptionInsts["text"].BackgroundTransparency = 1
+            OptionInsts["text"].TextXAlignment = Enum.TextXAlignment.Left
+            OptionInsts["text"].Position = UDim2.new(0, 5, 0, -1)
+            OptionInsts["text"].BorderSizePixel = 0
+            OptionInsts["text"].TextSize = 12
+            OptionInsts["text"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            OptionInsts["text"].Parent = OptionInsts["option"]
+
+            Library:AddToRegistry(OptionInsts["text"], {
+                TextColor3 = "Text";
+            })
+
+            OptionInsts["UIStroke"] = Instance.new("UIStroke")
+            OptionInsts["UIStroke"].LineJoinMode = Enum.LineJoinMode.Miter
+            OptionInsts["UIStroke"].Parent = OptionInsts["text"]
+
             OptionInsts["liner"] = Instance.new("Frame")
-        
-            -- 初始化 UI 元素（省略部分代码）
-        
+            OptionInsts["liner"].BackgroundTransparency = 1
+            OptionInsts["liner"].Name = "liner"
+            OptionInsts["liner"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+            OptionInsts["liner"].Size = UDim2.new(0, 1, 1, 0)
+            OptionInsts["liner"].BorderSizePixel = 0
+            OptionInsts["liner"].BackgroundColor3 = Library.Accent
+            OptionInsts["liner"].Parent = OptionInsts["option"]
+
+            Library:AddToRegistry(OptionInsts["liner"], {
+                BackgroundColor3 = "Accent";
+            })
+
             local Option = {
-                Name = Name,
-                IsSelected = false,
-                Text = OptionInsts["text"],
-                Selector = OptionInsts["liner"],
-                Button = OptionInsts["option"]
-            }
-        
-            -- 绑定点击事件
+                Name = Name;
+                IsSelected = false;
+                Selector = OptionInsts["liner"];
+                Text = OptionInsts["text"];
+                Button = OptionInsts["option"];
+            };
             Library:Connect(OptionInsts["option"].MouseButton1Down, function()
                 Option.IsSelected = not Option.IsSelected
-                if Option.IsSelected then
-                    Library:RemoveFromRegistry(Option.Text)
-                    Library:AddToRegistry(Option.Text, {
-                        TextColor3 = "Accent"
-                    })
-                    table.insert(Dropdown.Value, Option.Name)
+
+                for Index, Value in next, Dropdown.Options do 
+                    if Value ~= Option then 
+                        Value.IsSelected = false;
+                        Library:RemoveFromRegistry(Value.Text);
+                        Library:AddToRegistry(Value.Text, {
+                            TextColor3 = "Text"
+                        })
+                        game:GetService("TweenService"):Create(Value.Text, TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {TextColor3 = Library.Text}):Play();
+                        game:GetService("TweenService"):Create(Value.Selector, TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
+                        game:GetService("TweenService"):Create(Value.Text, TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Position = UDim2.new(0,4,0,-1)}):Play();
+                    end;
+                end;
+                
+                if Option.IsSelected then 
+                    Dropdown:Set(Option.Name);
                 else
-                    for i, v in ipairs(Dropdown.Value) do
-                        if v == Option.Name then
-                            table.remove(Dropdown.Value, i)
-                            break
-                        end
-                    end
-                    Library:RemoveFromRegistry(Option.Text)
-                    Library:AddToRegistry(Option.Text, {
+                    Library:RemoveFromRegistry(OptionInsts["text"]);
+                    Library:AddToRegistry(OptionInsts["text"], {
                         TextColor3 = "Text"
                     })
-                end
-                Dropdown:Set(Dropdown.Value)
+                    game:GetService("TweenService"):Create(OptionInsts["text"], TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {TextColor3 = Library.Text}):Play();
+                    game:GetService("TweenService"):Create(OptionInsts["text"], TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Position = UDim2.new(0,4,0,-1)}):Play();
+                    game:GetService("TweenService"):Create(OptionInsts["liner"], TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
+                end;
             end)
-        
-            -- 将选项添加到 Dropdown.Options
-            Dropdown.Options[Name] = Option
-            return Option
+            Dropdown.Options[Option.Name] = Option;
+
+            return Option;
         end;
 
         function Dropdown:RemoveOption(Name)
@@ -3404,7 +3449,6 @@ local Library = {}; do
             Dropdown.Value = {}
             Objects["value"].Text = ""
         
-            -- 清空所有选项的选中状态
             for Name, Option in pairs(Dropdown.Options) do
                 Option.IsSelected = false
                 Library:RemoveFromRegistry(Option.Text)
@@ -3415,8 +3459,7 @@ local Library = {}; do
                 game:GetService("TweenService"):Create(Option.Selector, TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
                 game:GetService("TweenService"):Create(Option.Text, TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Position = UDim2.new(0, 4, 0, -1)}):Play()
             end
-        
-            -- 设置新的选中状态
+
             if type(Value) == "table" then
                 for _, Name in ipairs(Value) do
                     if Dropdown.Options[Name] then
@@ -3431,10 +3474,9 @@ local Library = {}; do
                         Objects["value"].Text = Objects["value"].Text .. Name .. ", "
                     end
                 end
-                Objects["value"].Text = Objects["value"].Text:sub(1, -3) -- 去掉最后一个逗号
+                Objects["value"].Text = Objects["value"].Text:sub(1, -3)
             end
         
-            -- 触发回调
             if Dropdown.Callback then
                 Dropdown.Callback(Dropdown.Value)
             end
