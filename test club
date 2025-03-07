@@ -2367,7 +2367,7 @@ local Library = {}; do
                 Dropdown.Value = Value;
                 Objects["value"].Text = tostring(Value); 
                 Dropdown.Options[Value].IsSelected = true;
-                Library:RemoveFromRegistry(Dropdown.Options[Option.Name].Text);
+                Library:RemoveFromRegistry(Dropdown.Options[Value]);
                 Library:AddToRegistry(Dropdown.Options[Value].Text, {
                     TextColor3 = "Accent"
                 })
