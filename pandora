@@ -1,28 +1,6 @@
 -- made by portal
 -- example at bottom
 
--- Custom Fonts
-do 
-	-- 
-	writefile("smallest_pixel.ttf", game:HttpGet("https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-square.ttf"))
-	-- 
-	local smallest_pixel = {
-		name = "SmallestPixel7",
-		faces = {
-			{
-				name = "Regular",
-				weight = 400,
-				style = "normal",
-				assetId = getcustomasset("smallest_pixel.ttf")
-			}
-		}
-	}
-
-	writefile("menu_font.font", game:GetService("HttpService"):JSONEncode(smallest_pixel))
-
-	getgenv().menu_font = Font.new(getcustomasset("menu_font.font"), Enum.FontWeight.Regular)
-end; 
-
 local Library = {};
 do
 	Library = {
@@ -108,6 +86,31 @@ do
 	Library.Sections.__index = Library.Sections
 	local LocalPlayer = game:GetService('Players').LocalPlayer;
 	local Mouse = LocalPlayer:GetMouse();
+
+	-- Custom Fonts
+	do 
+		-- 
+		writefile("smallest_pixel.ttf", game:HttpGet("https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-square.ttf"))
+		-- 
+		local smallest_pixel = {
+			name = "SmallestPixel7",
+			faces = {
+				{
+					name = "Regular",
+					weight = 400,
+					style = "normal",
+					assetId = getcustomasset("smallest_pixel.ttf")
+				}
+			}
+		}
+	
+		writefile("menu_font.font", game:GetService("HttpService"):JSONEncode(smallest_pixel))
+	
+		getgenv().menu_font = Font.new(getcustomasset("menu_font.font"), Enum.FontWeight.Regular)
+	
+	        Library.UIFont = ProggySquareFont
+	        Library.FontSize = 10  -- 像素字体通常使用小字号
+	end; 
 
 	-- // Misc Functions
 	do
