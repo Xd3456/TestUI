@@ -87,15 +87,12 @@ do
 	local LocalPlayer = game:GetService('Players').LocalPlayer;
 	local Mouse = LocalPlayer:GetMouse();
 
-	-- 修复后的自定义字体代码
 	do
-	    -- 确保有文件夹
 	    local fonts_folder = "PortalUI_Fonts"
 	    if not isfolder(fonts_folder) then
 	        makefolder(fonts_folder)
 	    end
-	
-	    -- 定义字体数据（使用raw.githubusercontent.com确保能直接下载）
+
 	    local fonts = {
 	        ["windows-xp-tahoma"] = {
 	            file_name = {"windowsXPTahoma.ttf", "windowsXPTahoma.json"},
@@ -106,13 +103,11 @@ do
 	            url = "https://raw.githubusercontent.com/Xd3456/TestUI/main/fonts/proggy-square.ttf"
 	        }
 	    }
-	
-	    -- 安全加载字体函数
+
 	    local function load_font(font_name)
 	        local font_data = fonts[font_name]
 	        if not font_data then return nil end
-	        
-	        -- 下载字体文件
+
 	        local ttf_path = fonts_folder.."/"..font_data.file_name[1]
 	        if not isfile(ttf_path) then
 	            local success, err = pcall(function()
@@ -123,15 +118,14 @@ do
 	                return nil
 	            end
 	        end
-	
-	        -- 创建字体描述文件
+
 	        local json_path = fonts_folder.."/"..font_data.file_name[2]
 	        if not isfile(json_path) then
 	            local data = {
 	                name = font_name,
 	                faces = {{
 	                    name = "Regular",
-	                    weight = 400,  -- 正常粗细
+	                    weight = 400,
 	                    style = "normal",
 	                    assetId = getcustomasset(ttf_path)
 	                }}
@@ -139,20 +133,20 @@ do
 	            writefile(json_path, game:GetService("HttpService"):JSONEncode(data))
 	        end
 	
-	        -- 尝试加载字体
+
 	        local success, font = pcall(function()
 	            return Font.new(getcustomasset(json_path), Enum.FontWeight.Regular)
 	        end)
 	        
 	        return success and font or nil
 	    end
-	
-	    -- 尝试加载首选字体，失败则使用备用字体
-	    Library.UIFont = load_font("windows-xp-tahoma") or 
-	                     load_font("proggy-square") or 
-	                     Font.fromEnum(Enum.Font.GothamBold)
+
+	    --Library.UIFont = load_font("windows-xp-tahoma") or 
+	    Library.UIFont = load_font("windows-xp-tahoma")
+	                     --load_font("proggy-square") or 
+	                     --Font.fromEnum(Enum.Font.GothamBold)
 	    
-	    Library.FontSize = 10  -- 适合像素字体的大小
+	    Library.FontSize = 14
 	end
 
 	-- // Misc Functions
