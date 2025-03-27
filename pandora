@@ -1,5 +1,28 @@
 -- made by portal
 -- example at bottom
+
+-- Custom Fonts
+do 
+	-- 
+	writefile("smallest_pixel.ttf", game:HttpGet("https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-square.ttf"))
+	-- 
+	local smallest_pixel = {
+		name = "SmallestPixel7",
+		faces = {
+			{
+				name = "Regular",
+				weight = 400,
+				style = "normal",
+				assetId = getcustomasset("smallest_pixel.ttf")
+			}
+		}
+	}
+
+	writefile("menu_font.font", game:GetService("HttpService"):JSONEncode(smallest_pixel))
+
+	getgenv().menu_font = Font.new(getcustomasset("menu_font.font"), Enum.FontWeight.Regular)
+end; 
+
 local Library = {};
 do
 	Library = {
@@ -70,55 +93,6 @@ do
 		};
 		Connections = {};
 		--UIFont = Font.fromEnum(Enum.Font.GothamBold);
-		-- 首先确保有必要的文件夹
-		local fonts_folder = "LibraryFonts" -- 自定义字体文件夹名称
-		if not isfolder(fonts_folder) then
-		    makefolder(fonts_folder)
-		end
-		
-		-- 定义字体数据
-		local fonts = {
-		    ["windows-xp-tahoma"] = {
-		        file_name = {"windowsXPTahoma.ttf", "windowsXPTahoma.json"},
-		        url = "https://github.com/Xd3456/TestUI/raw/main/fonts/windows-xp-tahoma.ttf"
-		    }
-		}
-		
-		-- 下载并设置字体
-		for font_name, font_data in pairs(fonts) do
-		    -- 下载TTF字体文件
-		    if not isfile(fonts_folder .. "/" .. font_data.file_name[1]) then
-		        writefile(fonts_folder .. "/" .. font_data.file_name[1], game:HttpGet(font_data.url))
-		    end
-		    
-		    -- 创建字体描述JSON
-		    local data = {
-		        name = font_name,
-		        faces = {{
-		            name = "Regular",
-		            weight = 400,  -- 正常粗细
-		            style = "normal",
-		            assetId = getcustomasset(fonts_folder .. "/" .. font_data.file_name[1])
-		        }}
-		    }
-		    
-		    if not isfile(fonts_folder .. "/" .. font_data.file_name[2]) then
-		        writefile(fonts_folder .. "/" .. font_data.file_name[2], game:GetService("HttpService"):JSONEncode(data))
-		    end
-		end
-		
-		-- 获取字体函数
-		local function get_font_from_name(font_name)
-		    for name, data in pairs(fonts) do
-		        if name == font_name then
-		            return Font.new(getcustomasset(fonts_folder .. "/" .. data.file_name[2]))
-		        end
-		    end
-		    return Font.fromEnum(Enum.Font.GothamBold) -- 默认回退字体
-		end
-		
-		-- 设置库字体
-		UIFont = get_font_from_name("windows-xp-tahoma")
 		FontSize = 12;
 	}
 
