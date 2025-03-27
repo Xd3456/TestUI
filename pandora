@@ -87,67 +87,73 @@ do
 	local LocalPlayer = game:GetService('Players').LocalPlayer;
 	local Mouse = LocalPlayer:GetMouse();
 
-	    local fonts = {};
-	    do -- custom font (this is pasted from my other ui)
-		local fonts_folder = Library.FolderName .. '/Utilities';
-		fonts = {
-		    ["windows-xp-tahoma"] = {
-			file_name = {"windowsXPTahoma.ttf", "windowsXPTahoma.json"},
-			url = "https://github.com/Xd3456/TestUI/raw/refs/heads/main/fonts/windows-xp-tahoma.ttf"
-		    };
+	-- 修复后的自定义字体代码
+	do
+	    -- 确保有文件夹
+	    local fonts_folder = "PortalUI_Fonts"
+	    if not isfolder(fonts_folder) then
+	        makefolder(fonts_folder)
+	    end
 	
-		    ["proggy-square"] = {
-			file_name = {"proggySquare.ttf", "proggySquare.json"},
-			url = "https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-square.ttf"
-		    };
+	    -- 定义字体数据（使用raw.githubusercontent.com确保能直接下载）
+	    local fonts = {
+	        ["windows-xp-tahoma"] = {
+	            file_name = {"windowsXPTahoma.ttf", "windowsXPTahoma.json"},
+	            url = "https://raw.githubusercontent.com/Xd3456/TestUI/main/fonts/windows-xp-tahoma.ttf"
+	        },
+	        ["proggy-square"] = {
+	            file_name = {"proggySquare.ttf", "proggySquare.json"},
+	            url = "https://raw.githubusercontent.com/Xd3456/TestUI/main/fonts/proggy-square.ttf"
+	        }
+	    }
 	
-		    ["proggy-clean"] = {
-			file_name = {"proggyClean.ttf", "proggySquare.json"},
-			url = "https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-clean.ttf"
-		    };
+	    -- 安全加载字体函数
+	    local function load_font(font_name)
+	        local font_data = fonts[font_name]
+	        if not font_data then return nil end
+	        
+	        -- 下载字体文件
+	        local ttf_path = fonts_folder.."/"..font_data.file_name[1]
+	        if not isfile(ttf_path) then
+	            local success, err = pcall(function()
+	                writefile(ttf_path, game:HttpGet(font_data.url))
+	            end)
+	            if not success then
+	                warn("Failed to download font:", err)
+	                return nil
+	            end
+	        end
 	
-		    ["proggy-tiny"] = {
-			file_name = {"proggyTiny.ttf", "proggyTiny.json"},
-			url = "https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-tiny.ttf"
-		    };
+	        -- 创建字体描述文件
+	        local json_path = fonts_folder.."/"..font_data.file_name[2]
+	        if not isfile(json_path) then
+	            local data = {
+	                name = font_name,
+	                faces = {{
+	                    name = "Regular",
+	                    weight = 400,  -- 正常粗细
+	                    style = "normal",
+	                    assetId = getcustomasset(ttf_path)
+	                }}
+	            }
+	            writefile(json_path, game:GetService("HttpService"):JSONEncode(data))
+	        end
 	
-		    ["minecraftia"] = {
-			file_name = {"minecraftia.ttf", "minecraftia.json"},
-			url = "https://github.com/Xd3456/TestUI/blob/main/fonts/minecraftia.ttf"
-		    };
-		};
+	        -- 尝试加载字体
+	        local success, font = pcall(function()
+	            return Font.new(getcustomasset(json_path), Enum.FontWeight.Regular)
+	        end)
+	        
+	        return success and font or nil
+	    end
 	
-		for font_name, font_data in fonts do
-		    if not isfile(fonts_folder .. "/" .. font_data.file_name[1]) then
-			writefile(fonts_folder .. "/" .. font_data.file_name[1], game:HttpGet(font_data.url));
-		    end;
-	
-		    local data = {
-			name = font_name,
-			faces = {{
-			    name = "Regular",
-			    weight = 200,
-			    style = "Regular",
-			    assetId = getcustomasset(fonts_folder .. "/" .. font_data.file_name[1]);
-			}};
-		    };
-	
-		    if not isfile(fonts_folder .. "/" .. font_data.file_name[2]) then
-			writefile(fonts_folder .. "/" .. font_data.file_name[2], game:GetService("HttpService"):JSONEncode(data));
-		    end;
-		end;
-	
-		fonts.get_font_from_name = function(font_name)
-		    for name, data in fonts do
-			if name == font_name then
-			    return Font.new(getcustomasset(fonts_folder .. "/" .. data.file_name[2]))
-			end;
-		    end;
-		end;
-	    end;
-	
-	    Library.UIFont = fonts.get_font_from_name("windows-xp-tahoma");
-            Library.FontSize = 10  -- 像素字体通常使用小字号
+	    -- 尝试加载首选字体，失败则使用备用字体
+	    Library.UIFont = load_font("windows-xp-tahoma") or 
+	                     load_font("proggy-square") or 
+	                     Font.fromEnum(Enum.Font.GothamBold)
+	    
+	    Library.FontSize = 10  -- 适合像素字体的大小
+	end
 
 	-- // Misc Functions
 	do
