@@ -87,30 +87,67 @@ do
 	local LocalPlayer = game:GetService('Players').LocalPlayer;
 	local Mouse = LocalPlayer:GetMouse();
 
-	-- Custom Fonts
-	do 
-		-- 
-		writefile("smallest_pixel.ttf", game:HttpGet("https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-square.ttf"))
-		-- 
-		local smallest_pixel = {
-			name = "SmallestPixel7",
-			faces = {
-				{
-					name = "Regular",
-					weight = 400,
-					style = "normal",
-					assetId = getcustomasset("smallest_pixel.ttf")
-				}
-			}
-		}
+	    local fonts = {};
+	    do -- custom font (this is pasted from my other ui)
+		local fonts_folder = Library.FolderName .. '/Utilities';
+		fonts = {
+		    ["windows-xp-tahoma"] = {
+			file_name = {"windowsXPTahoma.ttf", "windowsXPTahoma.json"},
+			url = "https://github.com/Xd3456/TestUI/raw/refs/heads/main/fonts/windows-xp-tahoma.ttf"
+		    };
 	
-		writefile("menu_font.font", game:GetService("HttpService"):JSONEncode(smallest_pixel))
+		    ["proggy-square"] = {
+			file_name = {"proggySquare.ttf", "proggySquare.json"},
+			url = "https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-square.ttf"
+		    };
 	
-		getgenv().menu_font = Font.new(getcustomasset("menu_font.font"), Enum.FontWeight.Regular)
+		    ["proggy-clean"] = {
+			file_name = {"proggyClean.ttf", "proggySquare.json"},
+			url = "https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-clean.ttf"
+		    };
 	
-	        Library.UIFont = ProggySquareFont
-	        Library.FontSize = 10  -- 像素字体通常使用小字号
-	end; 
+		    ["proggy-tiny"] = {
+			file_name = {"proggyTiny.ttf", "proggyTiny.json"},
+			url = "https://github.com/Xd3456/TestUI/blob/main/fonts/proggy-tiny.ttf"
+		    };
+	
+		    ["minecraftia"] = {
+			file_name = {"minecraftia.ttf", "minecraftia.json"},
+			url = "https://github.com/Xd3456/TestUI/blob/main/fonts/minecraftia.ttf"
+		    };
+		};
+	
+		for font_name, font_data in fonts do
+		    if not isfile(fonts_folder .. "/" .. font_data.file_name[1]) then
+			writefile(fonts_folder .. "/" .. font_data.file_name[1], game:HttpGet(font_data.url));
+		    end;
+	
+		    local data = {
+			name = font_name,
+			faces = {{
+			    name = "Regular",
+			    weight = 200,
+			    style = "Regular",
+			    assetId = getcustomasset(fonts_folder .. "/" .. font_data.file_name[1]);
+			}};
+		    };
+	
+		    if not isfile(fonts_folder .. "/" .. font_data.file_name[2]) then
+			writefile(fonts_folder .. "/" .. font_data.file_name[2], game:GetService("HttpService"):JSONEncode(data));
+		    end;
+		end;
+	
+		fonts.get_font_from_name = function(font_name)
+		    for name, data in fonts do
+			if name == font_name then
+			    return Font.new(getcustomasset(fonts_folder .. "/" .. data.file_name[2]))
+			end;
+		    end;
+		end;
+	    end;
+	
+	    Library.UIFont = fonts.get_font_from_name("windows-xp-tahoma");
+            Library.FontSize = 10  -- 像素字体通常使用小字号
 
 	-- // Misc Functions
 	do
