@@ -118,7 +118,7 @@ do
 		end
 		
 		-- 设置库字体
-		Library.UIFont = get_font_from_name("windows-xp-tahoma")
+		UIFont = get_font_from_name("windows-xp-tahoma")
 		FontSize = 12;
 	}
 
