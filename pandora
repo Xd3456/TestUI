@@ -87,6 +87,7 @@ do
 	local LocalPlayer = game:GetService('Players').LocalPlayer;
 	local Mouse = LocalPlayer:GetMouse();
 
+	-- Custom Font
 	do
 	    local fonts_folder = "PortalUI_Fonts"
 	    if not isfolder(fonts_folder) then
@@ -142,11 +143,11 @@ do
 	    end
 
 	    --Library.UIFont = load_font("windows-xp-tahoma") or 
-	    Library.UIFont = load_font("proggy-square")
+	    Library.UIFont = load_font("windows-xp-tahoma")
 	                     --load_font("proggy-square") or 
 	                     --Font.fromEnum(Enum.Font.GothamBold)
 	    
-	    Library.FontSize = 12
+	    Library.FontSize = 20
 	end
 
 	-- // Misc Functions
