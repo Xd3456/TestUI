@@ -10,7 +10,7 @@ do
 			configs = "test/Configs";
 		};
 		--Accent = Color3.fromRGB(76, 162, 252);
-		Accent = Color3.fromRGB(216, 147, 177);
+		Accent = Color3.fromRGB(175, 119, 144);
 		Pages = {};
 		Sections = {};
 		Flags = {};
