@@ -142,7 +142,7 @@ do
 	    end
 
 	    --Library.UIFont = load_font("windows-xp-tahoma") or 
-	    Library.UIFont = load_font("windows-xp-tahoma")
+	    Library.UIFont = load_font("proggy-square")
 	                     --load_font("proggy-square") or 
 	                     --Font.fromEnum(Enum.Font.GothamBold)
 	    
