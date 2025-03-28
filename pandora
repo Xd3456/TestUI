@@ -126,8 +126,8 @@ do
 	                name = font_name,
 	                faces = {{
 	                    name = "Regular",
-	                    weight = 400,
-	                    style = "normal",
+	                    weight = 200,
+	                    style = "Regular",
 	                    assetId = getcustomasset(ttf_path)
 	                }}
 	            }
@@ -147,7 +147,7 @@ do
 	                     --load_font("proggy-square") or 
 	                     --Font.fromEnum(Enum.Font.GothamBold)
 	    
-	    Library.FontSize = 20
+	    Library.FontSize = 12
 	end
 
 	-- // Misc Functions
