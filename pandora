@@ -146,7 +146,7 @@ do
 	                     --load_font("proggy-square") or 
 	                     --Font.fromEnum(Enum.Font.GothamBold)
 	    
-	    Library.FontSize = 14
+	    Library.FontSize = 10
 	end
 
 	-- // Misc Functions
