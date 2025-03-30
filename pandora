@@ -390,26 +390,22 @@ do
 
 	do
 		function Library:KeybindList()
-			local Objects = {};
-			local KeyList = {};
-			
+			local Objects = {}
+			local KeyList = {}
+
+			-- 创建主容器
 			Objects["keybindlist"] = Instance.new("Frame")
-			Objects["keybindlist"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-			Objects["keybindlist"].AnchorPoint = Vector2.new(0, 0.5)
 			Objects["keybindlist"].Name = "keybindlist"
+			Objects["keybindlist"].AnchorPoint = Vector2.new(0, 0.5)
 			Objects["keybindlist"].Position = UDim2.new(0, 20, 0.5, 0)
 			Objects["keybindlist"].Size = UDim2.new(0, 0, 0, 18)
-			Objects["keybindlist"].BorderSizePixel = 2
 			Objects["keybindlist"].AutomaticSize = Enum.AutomaticSize.XY
-			Objects["keybindlist"].BackgroundColor3 = Color3.fromRGB(28, 28, 28) -- 明确的颜色值
-			Objects["keybindlist"].Parent = Library.Holder
+			Objects["keybindlist"].BackgroundColor3 = Color3.fromRGB(28, 28, 28) -- 直接设置颜色
+			Objects["keybindlist"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Objects["keybindlist"].BorderSizePixel = 2
+			Objects["keybindlist"].Parent = self.Holder
 
-			-- 确保Library.AddToRegistry中有Background的定义
-			Library:AddToRegistry(Objects["keybindlist"], {
-				BackgroundColor3 = "Background";
-				BorderColor3 = "Border";
-			});
-
+			-- 渐变效果（直接设置）
 			Objects["UIGradient"] = Instance.new("UIGradient")
 			Objects["UIGradient"].Rotation = 90
 			Objects["UIGradient"].Color = ColorSequence.new{
@@ -418,20 +414,17 @@ do
 			}
 			Objects["UIGradient"].Parent = Objects["keybindlist"]
 
+			-- 描边（直接设置）
 			Objects["UIStroke"] = Instance.new("UIStroke")
-			Objects["UIStroke"].Color = Color3.new(0,0,0)
+			Objects["UIStroke"].Color = Color3.new(0, 0, 0)
 			Objects["UIStroke"].LineJoinMode = Enum.LineJoinMode.Miter
 			Objects["UIStroke"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 			Objects["UIStroke"].Parent = Objects["keybindlist"]
 
-			Library:AddToRegistry(Objects["UIStroke"], {
-				Color = "Border";
-			});
-
+			-- 标题文本
 			Objects["value"] = Instance.new("TextLabel")
-			Objects["value"].FontFace = LibFont
-			Objects["value"].TextColor3 = Library.Text
-			Objects["value"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Objects["value"].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
+			Objects["value"].TextColor3 = Color3.fromRGB(255, 255, 255) -- 直接设置文本颜色
 			Objects["value"].Text = "Keybinds"
 			Objects["value"].TextStrokeTransparency = 0
 			Objects["value"].Name = "value"
@@ -439,89 +432,74 @@ do
 			Objects["value"].BackgroundTransparency = 1
 			Objects["value"].TextXAlignment = Enum.TextXAlignment.Left
 			Objects["value"].Position = UDim2.new(0, 4, 0, 0)
-			Objects["value"].BorderSizePixel = 0
 			Objects["value"].TextSize = 12
-			Objects["value"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			Objects["value"].Parent = Objects["keybindlist"]
 
-			Library:AddToRegistry(Objects["value"], {
-				TextColor3 = "Text";
-			});
-
+			-- 文本描边
 			Objects["UIStroke2"] = Instance.new("UIStroke")
 			Objects["UIStroke2"].LineJoinMode = Enum.LineJoinMode.Miter
 			Objects["UIStroke2"].Parent = Objects["value"]
 
+			-- 装饰线
 			Objects["accent"] = Instance.new("Frame")
 			Objects["accent"].Name = "accent"
-			Objects["accent"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Objects["accent"].Size = UDim2.new(1, 6, 0, 1)
 			Objects["accent"].BorderSizePixel = 0
-			Objects["accent"].BackgroundColor3 = Library.Accent
+			Objects["accent"].BackgroundColor3 = Color3.fromRGB(0, 170, 255) -- 直接设置强调色
 			Objects["accent"].Parent = Objects["keybindlist"]
 
-			Library:AddToRegistry(Objects["accent"], {
-				BackgroundColor3 = "Accent";
-			});
-
+			-- 内容容器
 			Objects["content"] = Instance.new("Frame")
-			Objects["content"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Objects["content"].Name = "content"
 			Objects["content"].BackgroundTransparency = 1
 			Objects["content"].Position = UDim2.new(0, 10, 0, 20)
 			Objects["content"].Size = UDim2.new(0, 100, 0, 0)
-			Objects["content"].BorderSizePixel = 0
 			Objects["content"].AutomaticSize = Enum.AutomaticSize.XY
-			Objects["content"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			Objects["content"].Parent = Objects["keybindlist"]
 
+			-- 布局
 			Objects["UIListLayout"] = Instance.new("UIListLayout")
 			Objects["UIListLayout"].SortOrder = Enum.SortOrder.LayoutOrder
 			Objects["UIListLayout"].Parent = Objects["content"]
 			
+			-- 功能方法
 			function KeyList:SetVisibility(Boolean)
-				Objects["keybindlist"].Visible = Boolean;
-			end;
+				Objects["keybindlist"].Visible = Boolean
+			end
 
 			function KeyList:AddNewKey(Key, Name)
-				local SubObjects = {};
-				local NewKey = {};
+				local SubObjects = {}
+				local NewKey = {}
 
 				SubObjects["newkey"] = Instance.new("TextLabel")
-				SubObjects["newkey"].FontFace = LibFont
-				SubObjects["newkey"].TextColor3 = Library.Accent
-				SubObjects["newkey"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-				SubObjects["newkey"].Text = `[{Key}]: {Name}`
+				SubObjects["newkey"].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
+				SubObjects["newkey"].TextColor3 = Color3.fromRGB(0, 170, 255) -- 直接设置强调色
+				SubObjects["newkey"].Text = string.format("[%s]: %s", Key, Name)
 				SubObjects["newkey"].Name = "newkey"
 				SubObjects["newkey"].BackgroundTransparency = 1
 				SubObjects["newkey"].TextXAlignment = Enum.TextXAlignment.Left
 				SubObjects["newkey"].Size = UDim2.new(0, 100, 0, 20)
-				SubObjects["newkey"].BorderSizePixel = 0
 				SubObjects["newkey"].TextSize = 12
-				SubObjects["newkey"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 				SubObjects["newkey"].Parent = Objects["content"]
-
-				Library:AddToRegistry(SubObjects["newkey"], {
-					TextColor3 = "Accent";
-				});
 
 				SubObjects["UIStroke"] = Instance.new("UIStroke")
 				SubObjects["UIStroke"].LineJoinMode = Enum.LineJoinMode.Miter
 				SubObjects["UIStroke"].Parent = SubObjects["newkey"]
 
 				function NewKey:SetVisiblity(Boolean)
-					SubObjects["newkey"].Visible = Boolean;
-				end;
+					SubObjects["newkey"].Visible = Boolean
+				end
 
 				function NewKey:Set(Key, Name)
-					SubObjects["newkey"].Text = `[{Key}]: {Name}`;
-				end;
+					SubObjects["newkey"].Text = string.format("[%s]: %s", Key, Name)
+				end
 
-				return NewKey;
-			end;
+				return NewKey
+			end
 
-			Library.KeybindList = KeyList;
-		end;
+			self.KeybindList = KeyList
+			return KeyList
+		end
 	end
 
 	-- // Colorpicker Element
