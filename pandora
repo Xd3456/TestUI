@@ -392,7 +392,7 @@ do
 		function Library:KeybindList()
 			local Objects = {};
 			local KeyList = {};
-
+			
 			Objects["keybindlist"] = Instance.new("Frame")
 			Objects["keybindlist"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Objects["keybindlist"].AnchorPoint = Vector2.new(0, 0.5)
@@ -401,11 +401,13 @@ do
 			Objects["keybindlist"].Size = UDim2.new(0, 0, 0, 18)
 			Objects["keybindlist"].BorderSizePixel = 2
 			Objects["keybindlist"].AutomaticSize = Enum.AutomaticSize.XY
-			Objects["keybindlist"].BackgroundColor3 = Color3.new(0.1098,0.1098,0.1098)
+			Objects["keybindlist"].BackgroundColor3 = Color3.fromRGB(28, 28, 28) -- 明确的颜色值
 			Objects["keybindlist"].Parent = Library.Holder
 
+			-- 确保Library.AddToRegistry中有Background的定义
 			Library:AddToRegistry(Objects["keybindlist"], {
 				BackgroundColor3 = "Background";
+				BorderColor3 = "Border";
 			});
 
 			Objects["UIGradient"] = Instance.new("UIGradient")
