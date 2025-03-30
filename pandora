@@ -497,7 +497,32 @@ do
 
 				return NewKey
 			end
-			KeyList:AddNewKey("sk", "tooggler")
+
+			function KeyList:RemoveKey(Key, Name)
+				local keyId = tostring(Key).."_"..tostring(Name or "*")
+				
+				-- 如果没有指定Name，则移除所有匹配Key的项
+				if not Name then
+					local count = 0
+					for id, entry in pairs(self._keybindEntries or {}) do
+						if string.find(id, "^"..tostring(Key)) then
+							entry:Destroy()
+							self._keybindEntries[id] = nil
+							count = count + 1
+						end
+					end
+					return count > 0
+				end
+				
+				-- 精确移除
+				if self._keybindEntries and self._keybindEntries[keyId] then
+					self._keybindEntries[keyId]:Destroy()
+					self._keybindEntries[keyId] = nil
+					return true
+				end
+				return false
+			end
+
 			self.KeybindList = KeyList
 			return KeyList
 		end
