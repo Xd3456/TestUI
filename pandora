@@ -392,107 +392,123 @@ do
 		function Library:KeybindList()
 			local Objects = {}
 			local KeyList = {}
-			local KeybindRegistry = {} -- 使用Flag作为键的注册表
-		
-			-- [保持原有的UI创建代码不变...]
-		
-			-- 改进的AddNewKey方法，支持完整配置
-			function KeyList:AddKeybind(config)
-				local flag = config.Flag
-				if not flag then
-					warn("Keybind必须提供Flag参数")
-					return nil
-				end
-		
-				-- 检查是否已存在
-				if KeybindRegistry[flag] then
-					self:RemoveKeybind(flag)
-				end
-		
-				-- 创建UI元素
-				local keyText = config.Key and config.Key.Name or "NONE"
-				local displayText = string.format("[%s]: %s", keyText, config.Name or "未命名")
-		
-				local textLabel = Instance.new("TextLabel")
-				textLabel.Text = displayText
-				textLabel.TextColor3 = Color3.fromRGB(0, 170, 255)
-				textLabel.BackgroundTransparency = 1
-				textLabel.TextXAlignment = Enum.TextXAlignment.Left
-				textLabel.Size = UDim2.new(0, 100, 0, 20)
-				textLabel.TextSize = 12
-				textLabel.Parent = Objects["content"]
-				textLabel.Name = "keybind_"..flag
-		
-				-- 存储绑定信息
-				KeybindRegistry[flag] = {
-					Flag = flag,
-					Key = config.Key,
-					Name = config.Name,
-					Mode = config.Mode or "Toggle",
-					Callback = config.Callback or function() end,
-					Instance = textLabel,
-					State = false
-				}
-		
-				-- 返回控制对象
-				local control = {}
-				function control:Update(config)
-					KeyList:AddKeybind(config) -- 重新添加即更新
-				end
-				function control:Remove()
-					KeyList:RemoveKeybind(flag)
-				end
-				return control
+			local ActiveKeybinds = {} -- 存储所有按键绑定和状态
+
+			-- 创建主容器
+			Objects["keybindlist"] = Instance.new("Frame")
+			Objects["keybindlist"].Name = "keybindlist"
+			Objects["keybindlist"].AnchorPoint = Vector2.new(0, 0.5)
+			Objects["keybindlist"].Position = UDim2.new(0, 20, 0.5, 0)
+			Objects["keybindlist"].Size = UDim2.new(0, 0, 0, 18)
+			Objects["keybindlist"].AutomaticSize = Enum.AutomaticSize.XY
+			Objects["keybindlist"].BackgroundColor3 = Color3.fromRGB(28, 28, 28) -- 直接设置颜色
+			Objects["keybindlist"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Objects["keybindlist"].BorderSizePixel = 2
+			Objects["keybindlist"].Parent = self.Holder
+
+			-- 渐变效果（直接设置）
+			Objects["UIGradient"] = Instance.new("UIGradient")
+			Objects["UIGradient"].Rotation = 90
+			Objects["UIGradient"].Color = ColorSequence.new{
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(17, 17, 17))
+			}
+			Objects["UIGradient"].Parent = Objects["keybindlist"]
+
+			-- 描边（直接设置）
+			Objects["UIStroke"] = Instance.new("UIStroke")
+			Objects["UIStroke"].Color = Color3.new(0, 0, 0)
+			Objects["UIStroke"].LineJoinMode = Enum.LineJoinMode.Miter
+			Objects["UIStroke"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+			Objects["UIStroke"].Parent = Objects["keybindlist"]
+
+			-- 标题文本
+			Objects["value"] = Instance.new("TextLabel")
+			Objects["value"].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
+			Objects["value"].TextColor3 = Color3.fromRGB(255, 255, 255) -- 直接设置文本颜色
+			Objects["value"].Text = "Keybinds"
+			Objects["value"].TextStrokeTransparency = 0
+			Objects["value"].Name = "value"
+			Objects["value"].Size = UDim2.new(0, 100, 0, 20)
+			Objects["value"].BackgroundTransparency = 1
+			Objects["value"].TextXAlignment = Enum.TextXAlignment.Left
+			Objects["value"].Position = UDim2.new(0, 4, 0, 0)
+			Objects["value"].TextSize = 12
+			Objects["value"].Parent = Objects["keybindlist"]
+
+			-- 文本描边
+			Objects["UIStroke2"] = Instance.new("UIStroke")
+			Objects["UIStroke2"].LineJoinMode = Enum.LineJoinMode.Miter
+			Objects["UIStroke2"].Parent = Objects["value"]
+
+			-- 装饰线
+			Objects["accent"] = Instance.new("Frame")
+			Objects["accent"].Name = "accent"
+			Objects["accent"].Size = UDim2.new(1, 6, 0, 1)
+			Objects["accent"].BorderSizePixel = 0
+			Objects["accent"].BackgroundColor3 = Color3.fromRGB(0, 170, 255) -- 直接设置强调色
+			Objects["accent"].Parent = Objects["keybindlist"]
+
+			-- 内容容器
+			Objects["content"] = Instance.new("Frame")
+			Objects["content"].Name = "content"
+			Objects["content"].BackgroundTransparency = 1
+			Objects["content"].Position = UDim2.new(0, 10, 0, 20)
+			Objects["content"].Size = UDim2.new(0, 100, 0, 0)
+			Objects["content"].AutomaticSize = Enum.AutomaticSize.XY
+			Objects["content"].Parent = Objects["keybindlist"]
+
+			-- 布局
+			Objects["UIListLayout"] = Instance.new("UIListLayout")
+			Objects["UIListLayout"].SortOrder = Enum.SortOrder.LayoutOrder
+			Objects["UIListLayout"].Parent = Objects["content"]
+			
+			-- 功能方法
+			function KeyList:SetVisibility(Boolean)
+				Objects["keybindlist"].Visible = Boolean
 			end
-		
-			-- 通过Flag移除键位
-			function KeyList:RemoveKeybind(flag)
-				if KeybindRegistry[flag] then
-					if KeybindRegistry[flag].Instance then
-						KeybindRegistry[flag].Instance:Destroy()
-					end
-					KeybindRegistry[flag] = nil
+
+			function KeyList:AddNewKey(Key, Name)
+				local SubObjects = {}
+				local NewKey = {}
+
+				SubObjects["newkey"] = Instance.new("TextLabel")
+				SubObjects["newkey"].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
+				SubObjects["newkey"].TextColor3 = Color3.fromRGB(0, 170, 255) -- 直接设置强调色
+				SubObjects["newkey"].Text = string.format("[%s]: %s", Key, Name)
+				SubObjects["newkey"].Name = "newkey"
+				SubObjects["newkey"].BackgroundTransparency = 1
+				SubObjects["newkey"].TextXAlignment = Enum.TextXAlignment.Left
+				SubObjects["newkey"].Size = UDim2.new(0, 100, 0, 20)
+				SubObjects["newkey"].TextSize = 12
+				SubObjects["newkey"].Parent = Objects["content"]
+
+				SubObjects["UIStroke"] = Instance.new("UIStroke")
+				SubObjects["UIStroke"].LineJoinMode = Enum.LineJoinMode.Miter
+				SubObjects["UIStroke"].Parent = SubObjects["newkey"]
+
+				function NewKey:SetVisiblity(Boolean)
+					SubObjects["newkey"].Visible = Boolean
+				end
+
+				function NewKey:Set(Key, Name)
+					SubObjects["newkey"].Text = string.format("[%s]: %s", Key, Name)
+				end
+
+				return NewKey
+			end
+
+			function KeyList:RemoveKey(Key, Name)
+				local key = keyReferences[tostring(Key).."_"..Name]
+				if key then
+					key:Destroy()
+					keyReferences[tostring(Key).."_"..Name] = nil
 					return true
 				end
 				return false
 			end
-		
-			-- 全局按键检测
-			Library:Connection(game:GetService("UserInputService").InputBegan, function(input, gpe)
-				if gpe then return end
-				
-				for flag, keybind in pairs(KeybindRegistry) do
-					if input.KeyCode == keybind.Key then
-						if keybind.Mode == "Toggle" then
-							keybind.State = not keybind.State
-							keybind.Callback(keybind.State)
-						elseif keybind.Mode == "Hold" then
-							keybind.State = true
-							keybind.Callback(true)
-						end
-						
-						-- 更新显示
-						local stateText = keybind.State and " (ACTIVE)" or ""
-						keybind.Instance.Text = string.format("[%s]: %s%s", 
-							keybind.Key.Name, 
-							keybind.Name, 
-							stateText)
-					end
-				end
-			end)
-		
-			Library:Connection(game:GetService("UserInputService").InputEnded, function(input)
-				for flag, keybind in pairs(KeybindRegistry) do
-					if input.KeyCode == keybind.Key and keybind.Mode == "Hold" then
-						keybind.State = false
-						keybind.Callback(false)
-						keybind.Instance.Text = string.format("[%s]: %s", 
-							keybind.Key.Name, 
-							keybind.Name)
-					end
-				end
-			end)
-		
+
+			self.KeybindList = KeyList
 			return KeyList
 		end
 	end
