@@ -401,7 +401,7 @@ do
 			Objects["keybindlist"].Size = UDim2.new(0, 0, 0, 18)
 			Objects["keybindlist"].BorderSizePixel = 2
 			Objects["keybindlist"].AutomaticSize = Enum.AutomaticSize.XY
-			Objects["keybindlist"].BackgroundColor3 = Library.Background
+			Objects["keybindlist"].BackgroundColor3 = Color3.new(0.1098,0.1098,0.1098)
 			Objects["keybindlist"].Parent = Library.Holder
 
 			Library:AddToRegistry(Objects["keybindlist"], {
@@ -417,7 +417,7 @@ do
 			Objects["UIGradient"].Parent = Objects["keybindlist"]
 
 			Objects["UIStroke"] = Instance.new("UIStroke")
-			Objects["UIStroke"].Color = Library.Border
+			Objects["UIStroke"].Color = Color3.new(0,0,0)
 			Objects["UIStroke"].LineJoinMode = Enum.LineJoinMode.Miter
 			Objects["UIStroke"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 			Objects["UIStroke"].Parent = Objects["keybindlist"]
