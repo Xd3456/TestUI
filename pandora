@@ -468,15 +468,16 @@ do
 				Objects["keybindlist"].Visible = Boolean
 			end
 
+			-- 修改后的AddNewKey方法
 			function KeyList:AddNewKey(Key, Name)
 				local SubObjects = {}
 				local NewKey = {}
 
 				SubObjects["newkey"] = Instance.new("TextLabel")
 				SubObjects["newkey"].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-				SubObjects["newkey"].TextColor3 = Color3.fromRGB(0, 170, 255) -- 直接设置强调色
+				SubObjects["newkey"].TextColor3 = Color3.fromRGB(0, 170, 255)
 				SubObjects["newkey"].Text = string.format("[%s]: %s", Key, Name)
-				SubObjects["newkey"].Name = "newkey"
+				SubObjects["newkey"].Name = "keybind_"..tostring(Key).."_"..Name -- 唯一名称
 				SubObjects["newkey"].BackgroundTransparency = 1
 				SubObjects["newkey"].TextXAlignment = Enum.TextXAlignment.Left
 				SubObjects["newkey"].Size = UDim2.new(0, 100, 0, 20)
@@ -487,28 +488,38 @@ do
 				SubObjects["UIStroke"].LineJoinMode = Enum.LineJoinMode.Miter
 				SubObjects["UIStroke"].Parent = SubObjects["newkey"]
 
+				-- 存储引用
+				keyReferences[tostring(Key).."_"..Name] = SubObjects["newkey"]
+
 				function NewKey:SetVisiblity(Boolean)
 					SubObjects["newkey"].Visible = Boolean
 				end
 
 				function NewKey:Set(Key, Name)
-					SubObjects["newkey"].Text = string.format("[%s]: %s", Key, Name)
+					-- 先移除旧键
+					self:Remove()
+					-- 添加新键
+					return KeyList:AddNewKey(Key, Name)
+				end
+
+				function NewKey:Remove()
+					KeyList:RemoveKey(Key, Name)
 				end
 
 				return NewKey
 			end
 
+			-- 修复的RemoveKey方法
 			function KeyList:RemoveKey(Key, Name)
-				local key = keyReferences[tostring(Key).."_"..Name]
-				if key then
-					key:Destroy()
-					keyReferences[tostring(Key).."_"..Name] = nil
+				local keyId = tostring(Key).."_"..Name
+				if keyReferences[keyId] then
+					keyReferences[keyId]:Destroy()
+					keyReferences[keyId] = nil
 					return true
 				end
 				return false
 			end
 
-			self.KeybindList = KeyList
 			return KeyList
 		end
 	end
