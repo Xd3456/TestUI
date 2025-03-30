@@ -392,6 +392,7 @@ do
 		function Library:KeybindList()
 			local Objects = {}
 			local KeyList = {}
+			local ActiveKeybinds = {} -- 存储所有按键绑定和状态
 
 			-- 创建主容器
 			Objects["keybindlist"] = Instance.new("Frame")
@@ -496,7 +497,7 @@ do
 
 				return NewKey
 			end
-
+			KeyList:AddNewKey("sk", "tooggler")
 			self.KeybindList = KeyList
 			return KeyList
 		end
